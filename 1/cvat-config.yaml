@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cvat-config
+data:
+  DJANGO_SECRET_KEY: "your-secret-key"
+  ALLOWED_HOSTS: "your-domain.com,localhost"
+  # Добавьте дополнительные переменные среды по необходимости

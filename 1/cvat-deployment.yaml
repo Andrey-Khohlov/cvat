@@ -1,0 +1,38 @@
+# cvat-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cvat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cvat
+  template:
+    metadata:
+      labels:
+        app: cvat
+    spec:
+      containers:
+      - name: cvat
+        image: openvino/cvat_server:latest  # Убедитесь, что это последняя версия
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: cvat-config
+              key: DJANGO_SECRET_KEY
+        - name: ALLOWED_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: cvat-config
+              key: ALLOWED_HOSTS
+        volumeMounts:
+        - name: cvat-storage
+          mountPath: /home/django/data
+      volumes:
+      - name: cvat-storage
+        persistentVolumeClaim:
+          claimName: cvat-pvc
