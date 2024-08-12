@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cvat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cvat
+  template:
+    metadata:
+      labels:
+        app: cvat
+    spec:
+      containers:
+      - name: cvat
+        image: openvino/cvat_server
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: cvat-config
+        volumeMounts:
+        - mountPath: /home/django/data
+          name: cvat-storage
+      volumes:
+      - name: cvat-storage
+        persistentVolumeClaim:
+          claimName: cvat-pvc
