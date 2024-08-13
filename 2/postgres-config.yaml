@@ -1,0 +1,16 @@
+# postgres-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  POSTGRES_DB: cvat
+  POSTGRES_USER: cvat
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+type: Opaque
+data:
+  POSTGRES_PASSWORD: c3VwZXJzZWNyZXRwYXNz  # Пароль в base64
