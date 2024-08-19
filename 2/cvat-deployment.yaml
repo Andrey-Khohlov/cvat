@@ -13,6 +13,13 @@ spec:
       labels:
         app: cvat
     spec:
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: [ "sh", "-c", "chown -R 1000:1000 /home/django/data" ]
+          volumeMounts:
+            - name: cvat-storage
+              mountPath: /home/django/data
       containers:
       - name: cvat
         image: openvino/cvat_server:latest
