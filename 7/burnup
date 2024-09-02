@@ -1,0 +1,35 @@
+kubectl apply -f cvat-cache-db-persistentvolumeclaim.yaml
+
+kubectl apply -f cvat-data-persistentvolumeclaim.yaml
+kubectl apply -f cvat-db-deployment.yaml
+kubectl apply -f cvat-db-persistentvolumeclaim.yaml
+kubectl apply -f cvat-events-db-persistentvolumeclaim.yaml
+
+kubectl apply -f cvat-inmem-db-persistentvolumeclaim.yaml
+kubectl apply -f cvat-keys-persistentvolumeclaim.yaml
+kubectl apply -f cvat-logs-persistentvolumeclaim.yaml
+kubectl apply -f cvat-opa-deployment.yaml
+kubectl apply -f cvat-redis-inmem-deployment.yaml
+kubectl apply -f cvat-redis-ondisk-deployment.yaml
+kubectl apply -f cvat-server-deployment.yaml
+kubectl apply -f cvat-ui-deployment.yaml
+kubectl apply -f cvat-utils-deployment.yaml
+kubectl apply -f traefik-claim1-persistentvolumeclaim.yaml
+kubectl apply -f traefik-deployment.yaml
+kubectl apply -f traefik-service.yaml
+
+if [ "$1" = "all" ]
+then
+kubectl apply -f cvat-grafana-claim0-persistentvolumeclaim.yaml
+kubectl apply -f cvat-grafana-deployment.yaml
+kubectl apply -f cvat-clickhouse-claim0-persistentvolumeclaim.yaml
+kubectl apply -f cvat-clickhouse-deployment.yaml
+kubectl apply -f cvat-vector-claim0-persistentvolumeclaim.yaml
+kubectl apply -f cvat-vector-deployment.yaml
+kubectl apply -f cvat-worker-analytics-reports-deployment.yaml
+kubectl apply -f cvat-worker-annotation-deployment.yaml
+kubectl apply -f cvat-worker-export-deployment.yaml
+kubectl apply -f cvat-worker-import-deployment.yaml
+kubectl apply -f cvat-worker-quality-reports-deployment.yaml
+kubectl apply -f cvat-worker-webhooks-deployment.yaml
+fi

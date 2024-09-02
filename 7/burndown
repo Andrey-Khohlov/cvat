@@ -1,0 +1,36 @@
+kubectl delete -f cvat-cache-db-persistentvolumeclaim.yaml
+
+kubectl delete -f cvat-data-persistentvolumeclaim.yaml
+kubectl delete -f cvat-db-deployment.yaml
+kubectl delete -f cvat-db-persistentvolumeclaim.yaml
+kubectl delete -f cvat-events-db-persistentvolumeclaim.yaml
+
+kubectl delete -f cvat-inmem-db-persistentvolumeclaim.yaml
+kubectl delete -f cvat-keys-persistentvolumeclaim.yaml
+kubectl delete -f cvat-logs-persistentvolumeclaim.yaml
+kubectl delete -f cvat-opa-deployment.yaml
+kubectl delete -f cvat-redis-inmem-deployment.yaml
+kubectl delete -f cvat-redis-ondisk-deployment.yaml
+kubectl delete -f cvat-server-deployment.yaml
+kubectl delete -f cvat-ui-deployment.yaml
+kubectl delete -f cvat-utils-deployment.yaml
+kubectl delete -f traefik-claim1-persistentvolumeclaim.yaml
+kubectl delete -f traefik-deployment.yaml
+kubectl delete -f traefik-service.yaml
+
+if [ "$1" = "all" ]
+then
+kubectl delete -f cvat-grafana-claim0-persistentvolumeclaim.yaml
+kubectl delete -f cvat-grafana-deployment.yaml
+kubectl delete -f cvat-clickhouse-claim0-persistentvolumeclaim.yaml
+kubectl delete -f cvat-clickhouse-deployment.yaml
+kubectl delete -f cvat-vector-claim0-persistentvolumeclaim.yaml
+kubectl delete -f cvat-vector-deployment.yaml
+kubectl delete -f cvat-worker-analytics-reports-deployment.yaml
+kubectl delete -f cvat-worker-annotation-deployment.yaml
+kubectl delete -f cvat-worker-export-deployment.yaml
+kubectl delete -f cvat-worker-import-deployment.yaml
+kubectl delete -f cvat-worker-quality-reports-deployment.yaml
+kubectl delete -f cvat-worker-webhooks-deployment.yaml
+
+fi

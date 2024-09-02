@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.34.0 (cbf2835db)
+  labels:
+    io.kompose.service: cvat-grafana
+  name: cvat-grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: cvat-grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.34.0 (cbf2835db)
+      labels:
+        io.kompose.service: cvat-grafana
+    spec:
+      containers:
+        - command:
+            - sh
+            - -euc
+            - |
+              mkdir -p /etc/grafana/provisioning/datasources
+              cat << 'EOF' > /etc/grafana/provisioning/datasources/ds.yaml
+              apiVersion: 1
+              datasources:
+                - name: 'ClickHouse'
+                  type: 'grafana-clickhouse-datasource'
+                  isDefault: true
+                  jsonData:
+                    defaultDatabase: ${CLICKHOUSE_DB}
+                    port: ${CLICKHOUSE_PORT}
+                    server: ${CLICKHOUSE_HOST}
+                    username: ${CLICKHOUSE_USER}
+                    tlsSkipVerify: false
+                    protocol: http
+                  secureJsonData:
+                    password: ${CLICKHOUSE_PASSWORD}
+                  editable: true
+              EOF
+              mkdir -p /etc/grafana/provisioning/dashboards
+              cat << EOF > /etc/grafana/provisioning/dashboards/dashboard.yaml
+              apiVersion: 1
+              providers:
+                - name: cvat-logs
+                  type: file
+                  updateIntervalSeconds: 30
+                  options:
+                    path:  /var/lib/grafana/dashboards
+                    foldersFromFilesStructure: true
+              EOF
+              exec /run.sh
+          env:
+            - name: CLICKHOUSE_DB
+              value: cvat
+            - name: CLICKHOUSE_HOST
+              value: clickhouse
+            - name: CLICKHOUSE_PASSWORD
+              value: user
+            - name: CLICKHOUSE_PORT
+              value: "8123"
+            - name: CLICKHOUSE_USER
+              value: user
+            - name: GF_AUTH_ANONYMOUS_ENABLED
+              value: "true"
+            - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+              value: Admin
+            - name: GF_AUTH_BASIC_ENABLED
+              value: "false"
+            - name: GF_AUTH_DISABLE_LOGIN_FORM
+              value: "true"
+            - name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
+              value: /var/lib/grafana/dashboards/all_events.json
+            - name: GF_INSTALL_PLUGINS
+              value: https://github.com/grafana/clickhouse-datasource/releases/download/v4.0.8/grafana-clickhouse-datasource-4.0.8.linux_amd64.zip;grafana-clickhouse-datasource
+            - name: GF_PATHS_PROVISIONING
+              value: /etc/grafana/provisioning
+            - name: GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS
+              value: grafana-clickhouse-datasource
+            - name: GF_SERVER_ROOT_URL
+              value: http://localhost/analytics
+          image: grafana/grafana-oss:10.1.2
+          name: cvat-grafana
+          volumeMounts:
+            - mountPath: /var/lib/grafana/dashboards
+              name: cvat-grafana-claim0
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: cvat-grafana-claim0
+          persistentVolumeClaim:
+            claimName: cvat-grafana-claim0
+            readOnly: true
